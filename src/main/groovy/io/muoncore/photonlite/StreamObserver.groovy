@@ -2,6 +2,7 @@ package io.muoncore.photonlite
 
 import groovy.util.logging.Slf4j
 import io.muoncore.protocol.event.Event
+import org.reactivestreams.Processor
 import org.reactivestreams.Publisher
 import org.reactivestreams.Subscriber
 import org.reactivestreams.Subscription
@@ -9,7 +10,7 @@ import org.reactivestreams.Subscription
 import java.util.concurrent.ConcurrentLinkedQueue
 
 @Slf4j
-class StreamObserver implements Publisher<Event>, Subscriber<Event> {
+class StreamObserver implements Processor<Event, Event> {
 
     private Object monitor
 

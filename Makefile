@@ -1,4 +1,6 @@
 
+.PHONY: build
+
 all: docker
 
 build:
