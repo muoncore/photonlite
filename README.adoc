@@ -1,0 +1,10 @@
+# Photon-lite
+
+Feature light down version of Photon, built using Spring Boot.
+
+Implementing only the core streaming APIs.
+
+
+
+
+
