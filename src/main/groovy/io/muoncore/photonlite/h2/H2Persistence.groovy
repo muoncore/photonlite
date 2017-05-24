@@ -7,6 +7,7 @@ import io.muoncore.protocol.event.Event
 import io.muoncore.protocol.event.server.EventWrapper
 import org.reactivestreams.Publisher
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
 import reactor.rx.Streams
 
 import javax.transaction.Transactional

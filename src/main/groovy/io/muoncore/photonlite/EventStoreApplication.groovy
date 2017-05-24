@@ -1,9 +1,11 @@
 package io.muoncore.photonlite
 
+import groovy.util.logging.Slf4j
 import io.muoncore.codec.Codecs
 import io.muoncore.codec.DelegatingCodecs
 import io.muoncore.codec.avro.AvroCodec
 import io.muoncore.codec.json.GsonCodec
+import io.muoncore.photonlite.h2.H2Configuration
 import org.apache.commons.cli.CommandLine
 import org.apache.commons.cli.CommandLineParser
 import org.apache.commons.cli.DefaultParser
@@ -22,6 +24,7 @@ import org.springframework.context.annotation.Configuration
         DataSourceAutoConfiguration
 ])
 @Configuration
+@Slf4j
 class EventStoreApplication {
 
     static void main(args) {
@@ -34,7 +37,7 @@ class EventStoreApplication {
         if (cmd.hasOption("help")) {
             HelpFormatter formatter = new HelpFormatter();
             formatter.printHelp( "help", op );
-            return;
+            return
         }
         if (cmd.hasOption("type")) {
             switch(cmd.getOptionValue("type")) {
@@ -43,7 +46,7 @@ class EventStoreApplication {
                     break
                 case "h2":
                 default:
-                    System.setProperty("spring.profiles.active", "h2")
+                    H2Configuration.processCommands(cmd)
             }
         }
 
@@ -55,6 +58,7 @@ class EventStoreApplication {
         Options op = new Options()
         op.addOption(Option.builder("type").hasArg().desc("Set the persistence type. One of mem,h2").build())
         op.addOption(Option.builder("help").desc("show the help").build())
+        H2Configuration.provideOptions(op)
         op
     }
 

@@ -8,4 +8,5 @@ COPY build/libs/photon-lite-1.0.jar /applocal/
 
 WORKDIR /applocal
 
-CMD ["/usr/bin/java", "-Duser.language=en", "-Duser.country=GB", "-Xmx700m", "-jar", "/applocal/photon-lite-1.0.jar"]
+ENTRYPOINT ["/usr/bin/java", "-Duser.language=en", "-Duser.country=GB", "-Xmx700m", "-jar", "/applocal/photon-lite-1.0.jar"]
+CMD ["-h2.path", "/tmp/photon"]
