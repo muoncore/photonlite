@@ -1,10 +1,13 @@
 
 .PHONY: build
 
-all: docker
+all: build
 
 build:
-	./gradlew bootRepackage
+	./gradlew build
 
 clean:
 	./gradlew clean
+
+test:
+	./gradlew check

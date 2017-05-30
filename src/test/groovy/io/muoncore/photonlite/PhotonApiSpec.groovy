@@ -90,6 +90,7 @@ abstract class PhotonApiSpec extends Specification {
     def "can persist and replay events - cold"() {
         given:
         def data = []
+        def closed = false
         def cl = new DefaultEventClient(muon)
 
         when:
@@ -103,7 +104,28 @@ abstract class PhotonApiSpec extends Specification {
         }
 
         sleep(200)
-        subscribe(cl, data, EventReplayMode.REPLAY_ONLY)
+        cl.replay("my-stream", EventReplayMode.REPLAY_ONLY, [:], new Subscriber<Event>() {
+            @Override
+            void onSubscribe(Subscription subscription) {
+                subscription.request(Integer.MAX_VALUE)
+            }
+
+            @Override
+            void onNext(Event event) {
+                data << event
+            }
+
+            @Override
+            void onError(Throwable throwable) {
+                throwable.printStackTrace()
+            }
+
+            @Override
+            void onComplete() {
+                println "Completed"
+                closed = true
+            }
+        })
         sleep(50)
         12.times {
             cl.event(ClientEvent.ofType("ProductAdded")
@@ -117,6 +139,7 @@ abstract class PhotonApiSpec extends Specification {
         then:
         new PollingConditions().eventually {
             data.size() == 5
+            closed == true
         }
 
         cleanup:

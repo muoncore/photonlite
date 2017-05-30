@@ -39,8 +39,17 @@ class EventStoreApplication {
             formatter.printHelp( "help", op );
             return
         }
+        muonurl(cmd)
+        persistencType(cmd)
+
+
+        SpringApplication.run(
+                EventStoreApplication as Object[], args)
+    }
+
+    private static void persistencType(CommandLine cmd) {
         if (cmd.hasOption("type")) {
-            switch(cmd.getOptionValue("type")) {
+            switch (cmd.getOptionValue("type")) {
                 case "mem":
 
                     break
@@ -49,14 +58,18 @@ class EventStoreApplication {
                     H2Configuration.processCommands(cmd)
             }
         }
+    }
 
-        SpringApplication.run(
-                EventStoreApplication as Object[], args)
+    private static void muonurl(CommandLine cmd) {
+        if (cmd.hasOption("muonurl")) {
+            System.setProperty("muon.amqp.url", cmd.getOptionValue("muonurl"))
+        }
     }
 
     static Options options() {
         Options op = new Options()
         op.addOption(Option.builder("type").hasArg().desc("Set the persistence type. One of mem,h2").build())
+        op.addOption(Option.builder("muonurl").hasArg().desc("The Muon discovery url to use. Try amqp://localhost or similar for an AMQP discovery").build())
         op.addOption(Option.builder("help").desc("show the help").build())
         H2Configuration.provideOptions(op)
         op

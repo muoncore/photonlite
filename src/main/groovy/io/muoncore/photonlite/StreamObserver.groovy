@@ -44,6 +44,7 @@ class StreamObserver implements Processor<Event, Event> {
                 requested--
                 sub.onNext(item)
             }
+            if (coldOnly) complete()
         }
     }
 
