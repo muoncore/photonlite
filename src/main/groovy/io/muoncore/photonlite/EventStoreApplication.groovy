@@ -1,11 +1,8 @@
 package io.muoncore.photonlite
 
 import groovy.util.logging.Slf4j
-import io.muoncore.channel.impl.StandardAsyncChannel
 import io.muoncore.codec.Codecs
 import io.muoncore.codec.DelegatingCodecs
-import io.muoncore.codec.avro.AvroCodec
-import io.muoncore.codec.json.GsonCodec
 import io.muoncore.codec.json.JsonOnlyCodecs
 import io.muoncore.photonlite.h2.H2Configuration
 import org.apache.commons.cli.CommandLine
@@ -30,8 +27,6 @@ import org.springframework.context.annotation.Configuration
 class EventStoreApplication {
 
     static void main(args) {
-
-        StandardAsyncChannel.echoOut = true;
 
         Options op = options()
 
