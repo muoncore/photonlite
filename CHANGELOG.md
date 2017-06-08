@@ -1,5 +1,11 @@
 # Change Log
 
+## [v0.0.5](https://github.com/muoncore/photonlite/tree/v0.0.5) (2017-06-08)
+[Full Changelog](https://github.com/muoncore/photonlite/compare/v0.0.4...v0.0.5)
+
+## [v0.0.4](https://github.com/muoncore/photonlite/tree/v0.0.4) (2017-06-08)
+[Full Changelog](https://github.com/muoncore/photonlite/compare/v0.0.3...v0.0.4)
+
 ## [v0.0.3](https://github.com/muoncore/photonlite/tree/v0.0.3) (2017-05-31)
 [Full Changelog](https://github.com/muoncore/photonlite/compare/v0.0.2...v0.0.3)
 
