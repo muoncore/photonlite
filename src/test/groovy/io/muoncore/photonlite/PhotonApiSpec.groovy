@@ -25,6 +25,46 @@ abstract class PhotonApiSpec extends Specification {
     @Autowired
     Muon muon
 
+    def "on cold replay of a non existing stream, immediately sends closed"() {
+        given:
+        def data = []
+        def closed = false
+        def cl = new DefaultEventClient(muon)
+
+        when:
+        cl.replay("my-stream", EventReplayMode.REPLAY_ONLY, [:], new Subscriber<Event>() {
+            @Override
+            void onSubscribe(Subscription subscription) {
+                subscription.request(Integer.MAX_VALUE)
+            }
+
+            @Override
+            void onNext(Event event) {
+                data << event
+            }
+
+            @Override
+            void onError(Throwable throwable) {
+                throwable.printStackTrace()
+            }
+
+            @Override
+            void onComplete() {
+                println "Completed"
+                closed = true
+            }
+        })
+
+        then:
+        new PollingConditions().eventually {
+            data.size() == 0
+            closed == true
+        }
+
+        cleanup:
+        store.deleteStream("my-stream")
+    }
+
     def "can persist and replay events - hot"() {
         given:
         def data = []

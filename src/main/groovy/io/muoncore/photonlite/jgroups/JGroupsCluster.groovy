@@ -8,9 +8,11 @@ import io.muoncore.protocol.event.Event
 import org.jgroups.JChannel
 import org.jgroups.Message
 import org.jgroups.Receiver
+import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Component
 
 @Component
+@Profile("jgroups")
 class JGroupsCluster implements ClusterMessaging {
 
     JChannel channel

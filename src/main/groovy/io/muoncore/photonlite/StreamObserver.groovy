@@ -49,7 +49,7 @@ class StreamObserver implements Processor<Event, Event> {
     }
 
     void complete() {
-        sub.onComplete()
+        if (sub) sub.onComplete()
     }
 
     void accept(Event event) {
@@ -65,6 +65,12 @@ class StreamObserver implements Processor<Event, Event> {
         subscriber.onSubscribe(new Subscription() {
             @Override
             void request(long l) {
+
+                if (coldOnly && coldPlayed && coldBuffer.size() == 0) {
+                    subscriber.onComplete()
+                    return
+                }
+
                 requested += l
                 synchronized(monitor) {
                     monitor.notifyAll()
@@ -97,5 +103,6 @@ class StreamObserver implements Processor<Event, Event> {
     @Override
     void onComplete() {
         coldPlayed = true
+        if (coldOnly) complete()
     }
 }

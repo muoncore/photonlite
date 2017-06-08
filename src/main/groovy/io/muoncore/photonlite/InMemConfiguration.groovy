@@ -16,4 +16,10 @@ class InMemConfiguration {
         return new InMemPersistence()
     }
 
+    @Bean
+    @ConditionalOnMissingBean
+    ClusterMessaging clusterMessaging() {
+        log.info("Cluster messaging is disabled, running in single node mode")
+        new SingleNodeClusterMessaging()
+    }
 }

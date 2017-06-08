@@ -4,7 +4,23 @@ Feature light down version of Photon, built using Spring Boot.
 
 Implementing only the core streaming APIs.
 
+## Running
 
 
 
+## Clustering
 
+Set the `-cluster` flag to one of
+
+* `none`, clustering is fully switched off.
+* `multicast`, discovery is implemented via UDP multicast and messaging on top of a shared data source
+
+
+## Persistence config
+
+Set the '-type' flag to control the persistence engine used.
+
+* 'mem' - use in memory storage, ie non durable at all. Useful for testing, but will eventually blow the heap.
+* 'h2' - use a file based H2 database.
+
+### H2 Persistence

@@ -25,8 +25,8 @@ class H2Configuration {
         return new H2Persistence()
     }
 
-    static processCommands(CommandLine cmd) {
-        System.setProperty("spring.profiles.active", "h2")
+    static processCommands(CommandLine cmd, profiles) {
+        profiles << "h2"
 
         if (cmd.hasOption("h2path")) {
             log.info "Persisting events into H2 filedb at ${cmd.getOptionValue("h2path")}"
