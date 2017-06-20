@@ -29,6 +29,8 @@ class MuonTestConfig {
         return new EventBus()
     }
 
+
+
     @Bean
     Muon muon() {
         AutoConfiguration config = MuonConfigBuilder.withServiceIdentifier("photonlite")
@@ -43,7 +45,16 @@ class MuonTestConfig {
     }
 
     @Bean
-    EventClient eventClient(Muon muon) {
-        return new DefaultEventClient(muon)
+    EventClient eventClient() {
+        AutoConfiguration config = MuonConfigBuilder.withServiceIdentifier("client")
+                .build()
+
+        def muon2 = new MultiTransportMuon(config, discovery(),
+                Collections.singletonList(
+                        new InMemTransport(config, bus())
+                ),
+                new JsonOnlyCodecs())
+
+        return new DefaultEventClient(muon2)
     }
 }

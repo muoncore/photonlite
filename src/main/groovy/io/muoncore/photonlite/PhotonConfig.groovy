@@ -8,6 +8,8 @@ import io.muoncore.codec.avro.AvroCodec
 import io.muoncore.codec.json.GsonCodec
 import io.muoncore.config.AutoConfiguration
 import io.muoncore.config.MuonConfigBuilder
+import io.muoncore.protocol.reactivestream.server.ReactiveStreamServer
+import io.muoncore.protocol.rpc.server.RpcServer
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -30,5 +32,15 @@ class PhotonConfig {
         }).build()
 
         return MuonBuilder.withConfig(config).withCodecs(codecs).build();
+    }
+
+    @Bean
+    RpcServer rpcServer(Muon muon) {
+        new RpcServer(muon)
+    }
+
+    @Bean
+    ReactiveStreamServer reactiveStreamServer(Muon muon) {
+        new ReactiveStreamServer(muon)
     }
 }
