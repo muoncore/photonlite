@@ -7,6 +7,7 @@ import io.muoncore.protocol.event.Event
 import io.muoncore.protocol.event.client.DefaultEventClient
 import io.muoncore.protocol.event.client.EventReplayControl
 import io.muoncore.protocol.event.client.EventReplayMode
+import io.muoncore.protocol.rpc.client.RpcClient
 import org.reactivestreams.Subscriber
 import org.reactivestreams.Subscription
 import org.springframework.beans.factory.annotation.Autowired
@@ -274,6 +275,7 @@ abstract class PhotonApiSpec extends Specification {
         given:
         def data = []
         def cl = new DefaultEventClient(muon)
+        def rpc = new RpcClient(muon)
 
         when:
         cl.event(ClientEvent.ofType("ProductAdded")
@@ -295,7 +297,7 @@ abstract class PhotonApiSpec extends Specification {
         ]).build())
 
         then:
-        muon.request("rpc://photonlite/stream-names").get().getPayload(Map) == [
+        rpc.request("rpc://photonlite/stream-names").get().getPayload(Map) == [
                 "streams":[
                 ["stream-name": "my-stream"],
                 ["stream-name": "my-stream1"],
