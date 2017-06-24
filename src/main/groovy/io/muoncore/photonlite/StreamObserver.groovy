@@ -53,7 +53,7 @@ class StreamObserver implements Processor<Event, Event> {
     }
 
     void accept(Event event) {
-        log.debug "Testing event ${event.orderId}"
+        log.debug("Testing event ${event.orderId} coldOnly={} streamName={} orderId={} orderId={}", coldOnly, streamName, event.orderId, orderId)
         if (!coldOnly && streamName == event.streamName &&event.orderId >= orderId) {
             queue.offer(event)
         }
