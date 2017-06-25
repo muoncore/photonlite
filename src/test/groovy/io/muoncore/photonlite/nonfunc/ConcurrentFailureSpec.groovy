@@ -68,7 +68,8 @@ class ConcurrentFailureSpec extends Specification {
 
         then:
         new PollingConditions().eventually {
-            data.size() == data2.size() && data.size() == 100
+            data.size() == 100
+            data2.size() == 500
             replayed.size() == 5
         }
 
