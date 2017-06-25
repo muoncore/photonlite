@@ -271,6 +271,53 @@ abstract class PhotonApiSpec extends Specification {
         store.deleteStream("my-faked-stream")
     }
 
+    def "active hot subscriptions and emit events"() {
+        given:
+        def data = []
+        def cl = new DefaultEventClient(muon)
+
+        def items = []
+        when:
+        5.times {
+            items << cl.event(ClientEvent.ofType("ProductAdded")
+                    .stream("my-stream")
+                    .payload([
+                    message: "hello"
+            ]).build()
+            ).orderId
+        }
+
+        sleep(100)
+        subscribe(cl, data, EventReplayMode.REPLAY_THEN_LIVE, ["from": items[3]])
+        sleep(100)
+        5.times {
+            cl.event(ClientEvent.ofType("ProductAdded")
+                    .stream("my-faked-stream")
+                    .payload([
+                    message: "hello"
+            ]).build()
+            )
+        }
+
+        5.times {
+            cl.event(ClientEvent.ofType("ProductAdded")
+                    .stream("my-stream")
+                    .payload([
+                    message: "hello"
+            ]).build()
+            )
+        }
+
+        then:
+        new PollingConditions().eventually {
+            data.size() == 7
+        }
+
+        cleanup:
+        store.deleteStream("my-stream")
+        store.deleteStream("my-faked-stream")
+    }
+
     def "returns stream-names"() {
         given:
         def data = []
@@ -334,19 +381,3 @@ abstract class PhotonApiSpec extends Specification {
         })
     }
 }
-
-
-/*
-
-can have event emit
-
-
-event replay
-  cold
-  hot
-  hot-cold
-  from
-
-stream-names
-
- */

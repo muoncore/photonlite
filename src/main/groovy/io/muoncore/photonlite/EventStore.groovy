@@ -55,10 +55,11 @@ class EventStore {
             long from = Long.valueOf(request.args["from"] ?: 0 )
 
             def stream = request.args["stream-name"]
+            def subName = request.args["sub-name"]
             def streamType = request.args["stream-type"]
             if (!streamType) streamType = "hot-cold"
 
-            distribution.subscribeToLive(stream, streamType, from)
+            distribution.subscribeToLive(stream, streamType, from, subName)
         }
 
         muon.protocolStacks.registerServerProtocol(new EventServerProtocolStack({ event ->
