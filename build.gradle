@@ -35,9 +35,9 @@ dependencies {
 
     compile "io.muoncore:muon-core:7.3.2"
     compile "io.muoncore.transport:muon-amqp:0.0.7"
-    compile "io.muoncore.protocol:stack-rpc:0.0.1-SNAPSHOT"
-    compile "io.muoncore.protocol:stack-reactive-streams:0.0.1-SNAPSHOT"
-    compile "io.muoncore.protocol:stack-event:0.0.1-SNAPSHOT"
+    compile "io.muoncore.protocol:stack-rpc:0.0.1"
+    compile "io.muoncore.protocol:stack-reactive-streams:0.0.1"
+    compile "io.muoncore.protocol:stack-event:0.0.1"
     compile 'org.codehaus.groovy:groovy-all:2.4.10:indy'
     compile 'joda-time:joda-time:2.9.9'
     compile("org.springframework.boot:spring-boot-starter-data-jpa")
