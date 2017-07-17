@@ -34,7 +34,7 @@ class EventDistribution {
     Publisher subscribeToLive(String streamName, String type, long orderId, String subName) {
         def id = UUID.randomUUID().toString()
 
-        log.info("Creating new StreamObserver stream={} type={} from={} subname={}", streamName, type, orderId, subName)
+        log.debug("Creating new StreamObserver stream={} type={} from={} subname={}", streamName, type, orderId, subName)
         switch(type) {
             case "cold":
                 return persistence.replayEvent(streamName, type, orderId)
@@ -45,7 +45,6 @@ class EventDistribution {
 
                 return new ResourceManagingSubscriber(delegate: sub.toFlowable(BackpressureStrategy.LATEST).filter {
                     def ret = it.streamName == streamName && it.orderId >= orderId
-                    log.info("HOT: $subName, {}", it)
                     return ret
                 }, finished: {
                     log.debug("HOT subscription is now completed {}", id)
