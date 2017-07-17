@@ -38,11 +38,16 @@ dependencies {
     compile "io.muoncore.protocol:stack-rpc:0.0.1"
     compile "io.muoncore.protocol:stack-reactive-streams:0.0.1"
     compile "io.muoncore.protocol:stack-event:0.0.1"
+
     compile 'org.codehaus.groovy:groovy-all:2.4.10:indy'
     compile 'joda-time:joda-time:2.9.9'
+    compile 'io.reactivex.rxjava2:rxjava:2.1.1'
+
     compile("org.springframework.boot:spring-boot-starter-data-jpa")
     compile("com.h2database:h2")
-    compile 'io.reactivex.rxjava2:rxjava:2.1.1'
+
+    compile 'org.springframework.data:spring-data-mongodb:1.10.4.RELEASE'
+
     testCompile "org.spockframework:spock-core:1.1-groovy-2.4-rc-4"
     testCompile 'cglib:cglib:2.2.2'
     testCompile 'org.spockframework:spock-spring:1.1-groovy-2.4-rc-4'

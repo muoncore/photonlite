@@ -2,12 +2,12 @@ package io.muoncore.photonlite.h2
 
 import io.muoncore.codec.Codecs
 import io.muoncore.codec.json.GsonCodec
+import io.muoncore.codec.json.JsonOnlyCodecs
 import io.muoncore.photonlite.Persistence
 import io.muoncore.protocol.event.Event
 import io.muoncore.protocol.event.server.EventWrapper
 import org.reactivestreams.Publisher
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.beans.factory.annotation.Value
 import reactor.rx.Streams
 
 import javax.transaction.Transactional
@@ -15,10 +15,8 @@ import javax.transaction.Transactional
 class H2Persistence implements Persistence {
 
     @Autowired
-    EventRepo repo
-
-    @Autowired
-    Codecs codecs
+    JpaEventRepo repo
+    Codecs codecs = new JsonOnlyCodecs()
 
     @Override
     @Transactional

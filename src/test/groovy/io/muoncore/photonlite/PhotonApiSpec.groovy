@@ -31,6 +31,7 @@ abstract class PhotonApiSpec extends Specification {
         def data = []
         def closed = false
         def cl = new DefaultEventClient(muon)
+        store.deleteStream("my-stream")
 
         when:
         cl.replay("my-stream", EventReplayMode.REPLAY_ONLY, [:], new Subscriber<Event>() {

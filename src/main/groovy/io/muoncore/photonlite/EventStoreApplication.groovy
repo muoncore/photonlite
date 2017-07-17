@@ -6,6 +6,7 @@ import io.muoncore.codec.DelegatingCodecs
 import io.muoncore.codec.json.JsonOnlyCodecs
 import io.muoncore.photonlite.h2.H2Configuration
 import io.muoncore.photonlite.jgroups.JGroupsConfiguration
+import io.muoncore.photonlite.mongo.MongoConfiguration
 import org.apache.commons.cli.CommandLine
 import org.apache.commons.cli.CommandLineParser
 import org.apache.commons.cli.DefaultParser
@@ -55,7 +56,9 @@ class EventStoreApplication {
         if (cmd.hasOption("type")) {
             switch (cmd.getOptionValue("type")) {
                 case "mem":
-
+                    break
+                case "mongo":
+                    MongoConfiguration.processCommands(cmd, profiles)
                     break
                 case "h2":
                 default:
@@ -85,11 +88,12 @@ class EventStoreApplication {
 
     static Options options() {
         Options op = new Options()
-        op.addOption(Option.builder("type").hasArg().desc("Set the persistence type. One of mem,h2").build())
-        op.addOption(Option.builder("cluster").hasArg().desc("Set the Cluster type. One of none,multicast").build())
+        op.addOption(Option.builder("type").hasArg().desc("Set the persistence type. One of mem,h2,mongo. Default is mem").build())
+        op.addOption(Option.builder("cluster").hasArg().desc("Set the Cluster type. One of none,multicast. Default is none").build())
         op.addOption(Option.builder("muonurl").hasArg().desc("The Muon discovery url to use. Try amqp://localhost or similar for an AMQP discovery").build())
         op.addOption(Option.builder("help").desc("show the help").build())
         H2Configuration.provideOptions(op)
+        MongoConfiguration.provideOptions(op)
         op
     }
 

@@ -6,6 +6,7 @@ import io.muoncore.protocol.event.server.EventWrapper
 import io.reactivex.BackpressureStrategy
 import io.reactivex.Flowable
 import io.reactivex.subjects.PublishSubject
+import org.reactivestreams.Processor
 import org.reactivestreams.Publisher
 import org.reactivestreams.Subscriber
 import org.reactivestreams.Subscription
@@ -80,7 +81,7 @@ class EventDistribution {
 }
 
 @Slf4j
-class ResourceManagingSubscriber implements org.reactivestreams.Processor {
+class ResourceManagingSubscriber implements Processor {
 
     Publisher delegate
     Runnable finished
