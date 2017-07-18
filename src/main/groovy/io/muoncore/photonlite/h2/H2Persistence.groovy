@@ -56,4 +56,11 @@ class H2Persistence implements Persistence {
             ev
         }
     }
+
+    @Override
+    Map getStats() {
+        [
+                "streams": streamNames().size(),
+                "events": repo.count()]
+    }
 }

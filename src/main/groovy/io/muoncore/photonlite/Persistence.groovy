@@ -10,4 +10,5 @@ interface Persistence {
     void deleteStream(String name)
     List streamNames()
     Publisher<Event> replayEvent(String name, String type, long from)
+    Map getStats()
 }

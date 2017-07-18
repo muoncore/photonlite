@@ -31,6 +31,10 @@ class EventDistribution {
         clusterMessaging.start(this)
     }
 
+    Map getStats() {
+        ["active-streams": observers.size()]
+    }
+
     Publisher subscribeToLive(String streamName, String type, long orderId, String subName) {
         def id = UUID.randomUUID().toString()
 

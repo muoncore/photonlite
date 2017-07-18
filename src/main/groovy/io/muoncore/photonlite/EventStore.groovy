@@ -38,6 +38,14 @@ class EventStore {
 
     EventStore(Muon muon, ReactiveStreamServer reactiveStreamServer, RpcServer rpcServer) {
 
+        rpcServer.handleRequest(path("/stats")) { RequestWrapper request ->
+            request.ok([
+                    persistence: persistence.stats,
+                    streams: distribution.stats,
+                    cluster: distribution.clusterMessaging.stats
+            ])
+        }
+
         rpcServer.handleRequest(path("/stream-names")) { RequestWrapper request ->
             def names = persistence.streamNames().sort().collect {
                 ["stream-name": it]

@@ -36,6 +36,14 @@ class JGroupsCluster implements ClusterMessaging {
     }
 
     @Override
+    Map getStats() {
+        [
+                "type":"udp",
+                "stats":channel.dumpStats()
+        ]
+    }
+
+    @Override
     void dispatch(Event event) {
         def result = codecs.encode(event, codecs.getAvailableCodecs())
         channel.send(null, result.payload)

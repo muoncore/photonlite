@@ -77,6 +77,13 @@ class InMemPersistence implements Persistence {
         })
     }
 
+    @Override
+    Map getStats() {
+        [
+                "streams": streamNames().size(),
+                "events": history.size()]
+    }
+
     def matches(name, pattern) {
         pattern = pattern.replaceAll("\\*\\*", ".\\*")
         name ==~ pattern

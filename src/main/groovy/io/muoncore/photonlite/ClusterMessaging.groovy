@@ -5,4 +5,5 @@ import io.muoncore.protocol.event.Event
 interface ClusterMessaging {
     void dispatch(Event event)
     void start(EventDistribution distribution)
+    Map getStats()
 }

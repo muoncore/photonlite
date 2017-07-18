@@ -69,4 +69,14 @@ class MongoPersistence implements Persistence {
             new Event(it.eventType, it.streamName, it.schema, it.causedById, it.causedByRelation, it.service, it.orderId, it.eventTime, it.payload, codecs)
         }
     }
+
+    @Override
+    Map getStats() {
+
+        Query query = new Query()
+
+        [
+                "streams": streamNames().size(),
+                "events": template.count(query, EventRecord)]
+    }
 }
