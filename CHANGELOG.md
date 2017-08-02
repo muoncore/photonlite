@@ -1,5 +1,25 @@
 # Change Log
 
+## [v0.0.12](https://github.com/muoncore/photonlite/tree/v0.0.12) (2017-08-02)
+[Full Changelog](https://github.com/muoncore/photonlite/compare/v0.0.11...v0.0.12)
+
+## [v0.0.11](https://github.com/muoncore/photonlite/tree/v0.0.11) (2017-08-02)
+[Full Changelog](https://github.com/muoncore/photonlite/compare/v0.0.10...v0.0.11)
+
+## [v0.0.10](https://github.com/muoncore/photonlite/tree/v0.0.10) (2017-08-01)
+[Full Changelog](https://github.com/muoncore/photonlite/compare/v0.0.9...v0.0.10)
+
+**Fixed bugs:**
+
+-  AMQP Client connection has shut down unexpectedly, starting reconnect cycle [\#6](https://github.com/muoncore/photonlite/issues/6)
+- java.lang.OutOfMemoryError: GC overhead limit exceeded [\#4](https://github.com/muoncore/photonlite/issues/4)
+
+**Closed issues:**
+
+- Add statistics api to understand how photonlite is operating [\#11](https://github.com/muoncore/photonlite/issues/11)
+- Stream subscribers list is not being correctly maintained.  [\#9](https://github.com/muoncore/photonlite/issues/9)
+- Enable full mongo support.  [\#7](https://github.com/muoncore/photonlite/issues/7)
+
 ## [v0.0.9](https://github.com/muoncore/photonlite/tree/v0.0.9) (2017-06-25)
 [Full Changelog](https://github.com/muoncore/photonlite/compare/v0.0.8...v0.0.9)
 
