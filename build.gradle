@@ -33,8 +33,8 @@ dependencies {
     compile group: 'commons-cli', name: 'commons-cli', version: '1.4'
     compile 'org.jgroups:jgroups:4.0.1.Final'
 
-    compile "io.muoncore:muon-core:7.3.3-SNAPSHOT"
-    compile "io.muoncore.transport:muon-amqp:0.0.8-SNAPSHOT"
+    compile "io.muoncore:muon-core:7.3.3"
+    compile "io.muoncore.transport:muon-amqp:0.0.8"
     compile "io.muoncore.protocol:stack-rpc:0.0.1"
     compile "io.muoncore.protocol:stack-reactive-streams:0.0.1"
     compile "io.muoncore.protocol:stack-event:0.0.1"
