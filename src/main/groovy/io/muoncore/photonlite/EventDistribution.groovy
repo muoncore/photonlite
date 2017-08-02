@@ -64,7 +64,7 @@ class EventDistribution {
                     def ret = it.streamName == streamName && it.orderId >= orderId
                     return ret
                 }), finished: {
-                    log.debug("Hot-Cold sub is completed {}")
+                    log.debug("Hot-Cold sub is completed {}", subName)
                     observers.remove(sub)
                 })
         }

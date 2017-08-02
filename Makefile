@@ -4,7 +4,7 @@
 all: build
 
 build:
-	./gradlew build
+	./gradlew bootRepackage
 
 clean:
 	./gradlew clean

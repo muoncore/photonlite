@@ -63,6 +63,12 @@ class MongoPersistence implements Persistence {
         return template.getCollection(template.getCollectionName(EventRecord)).distinct("streamName")
     }
 
+    void clear() {
+        log.warn("Clearing entire event store")
+        Query query = new Query()
+        template.remove(query, EventRecord)
+    }
+
     @Override
     Publisher<Event> replayEvent(String name, String type, long from) {
         Streams.from(repo.findByStreamNameAndOrderIdGreaterThanEqual(name, from)).map {

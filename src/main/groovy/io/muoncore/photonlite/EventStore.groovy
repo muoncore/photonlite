@@ -1,6 +1,7 @@
 package io.muoncore.photonlite
 
 import io.muoncore.Muon
+import io.muoncore.photonlite.mongo.MongoPersistence
 import io.muoncore.protocol.event.server.EventServerProtocolStack
 import io.muoncore.protocol.reactivestream.messages.ReactiveStreamSubscriptionRequest
 import io.muoncore.protocol.reactivestream.server.PublisherLookup
@@ -27,7 +28,7 @@ class EventStore {
     public static Logger log = LoggerFactory.getLogger(EventStore)
 
     void clear() {
-        if (persistence instanceof InMemPersistence) {
+        if (persistence instanceof InMemPersistence || persistence instanceof MongoPersistence) {
             persistence.clear()
         }
     }

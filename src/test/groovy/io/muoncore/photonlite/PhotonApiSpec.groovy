@@ -321,6 +321,7 @@ abstract class PhotonApiSpec extends Specification {
 
     def "returns stream-names"() {
         given:
+        store.clear()
         def data = []
         def cl = new DefaultEventClient(muon)
         def rpc = new RpcClient(muon)
