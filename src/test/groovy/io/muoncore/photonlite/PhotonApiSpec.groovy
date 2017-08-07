@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
 import spock.lang.Specification
+import spock.lang.Unroll
 import spock.util.concurrent.PollingConditions
 
 @ActiveProfiles("test")
@@ -67,7 +68,8 @@ abstract class PhotonApiSpec extends Specification {
         store.deleteStream("my-stream")
     }
 
-    def "can persist and replay events - hot"() {
+    @Unroll
+    def "can persist and replay #itemcount events - hot"() {
         given:
         def data = []
         def cl = new DefaultEventClient(muon)
@@ -75,7 +77,7 @@ abstract class PhotonApiSpec extends Specification {
         subscribe(cl, data, EventReplayMode.LIVE_ONLY)
 
         when:
-        5.times {
+        itemcount.times {
             cl.event(ClientEvent.ofType("ProductAdded")
                     .stream("my-stream")
                     .payload([
@@ -86,57 +88,79 @@ abstract class PhotonApiSpec extends Specification {
 
         then:
         new PollingConditions().eventually {
-            data.size() == 5
+            data.size() == itemcount
         }
 
         cleanup:
         store.deleteStream("my-stream")
+
+        where:
+        itemcount << itemCounts
     }
 
-    def "can persist and replay events - hot-cold"() {
+    @Unroll
+    def "can persist and replay #itemcount events - hot-cold"() {
         given:
         def data = []
         def cl = new DefaultEventClient(muon)
 
+        def coldemitted = []
         when:
-        5.times {
-            cl.event(ClientEvent.ofType("ProductAdded")
+        (0..itemcount).each {
+            coldemitted << cl.event(ClientEvent.ofType("ProductAdded")
                     .stream("my-stream")
                     .payload([
                     message: "hello"
             ]).build()
-            )
+            ).orderId
         }
+
+        println "Emitted COLD data, subscribing then starting HOT set"
 
         sleep(200)
         subscribe(cl, data, EventReplayMode.REPLAY_THEN_LIVE)
         sleep(200)
-        5.times {
-            cl.event(ClientEvent.ofType("ProductAdded")
+
+        def emitted = []
+
+        println "Started subscribing, emitting HOT data $itemcount"
+        (0..itemcount).each {
+            println "LKJLKJKLKJJKL"
+            print "Emitting ${it} of $itemcount"
+            emitted << cl.event(ClientEvent.ofType("ProductAdded")
                     .stream("my-stream")
                     .payload([
                     message: "hello"
             ]).build()
-            )
+            ).orderId
+            println " ... done ${emitted.size()}"
         }
 
+        println "Completed emitting data"
+
         then:
-        new PollingConditions().eventually {
-            data.size() == 10
+        new PollingConditions(timeout: 30).eventually {
+            data.collect{it.orderId}.size() == emitted.size() + coldemitted.size()
         }
 
         cleanup:
         store.deleteStream("my-stream")
+
+        where:
+        itemcount << itemCounts
     }
 
-    def "can persist and replay events - cold"() {
+    @Unroll
+    def "can persist and replay #itemcount events - cold"() {
         given:
         def data = []
         def closed = false
         def cl = new DefaultEventClient(muon)
 
+        def id = UUID.randomUUID().toString()
         when:
-        5.times {
+        def then = System.currentTimeMillis()
+        itemcount.times {
             cl.event(ClientEvent.ofType("ProductAdded")
                     .stream("my-stream")
                     .payload([
@@ -144,8 +168,10 @@ abstract class PhotonApiSpec extends Specification {
             ]).build()
             )
         }
-
+        def now = System.currentTimeMillis()
+        println "Persisted ${itemcount} events for COLD replay in ${now - then}ms"
         sleep(200)
+        then = System.currentTimeMillis()
         cl.replay("my-stream", EventReplayMode.REPLAY_ONLY, [:], new Subscriber<Event>() {
             @Override
             void onSubscribe(Subscription subscription) {
@@ -164,7 +190,9 @@ abstract class PhotonApiSpec extends Specification {
 
             @Override
             void onComplete() {
-                println "Completed"
+                new Exception().printStackTrace()
+                now = System.currentTimeMillis()
+                println "COLD Replay $id completed in ${now - then}ms"
                 closed = true
             }
         })
@@ -180,12 +208,23 @@ abstract class PhotonApiSpec extends Specification {
 
         then:
         new PollingConditions().eventually {
-            data.size() == 5
+            data.size() == itemcount
             closed == true
         }
 
         cleanup:
         store.deleteStream("my-stream")
+
+        where:
+        itemcount << coldItemCounts
+    }
+
+    List getItemCounts() {
+        [12, 120, 1200]
+    }
+
+    List getColdItemCounts() {
+        [12, 120, 1200]
     }
 
     def "can persist and replay events cold-from"() {

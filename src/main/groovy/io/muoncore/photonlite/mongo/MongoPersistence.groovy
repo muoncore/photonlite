@@ -8,11 +8,15 @@ import io.muoncore.protocol.event.Event
 import io.muoncore.protocol.event.server.EventWrapper
 import org.reactivestreams.Publisher
 import org.springframework.beans.BeanUtils
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageRequest
 import org.springframework.data.mongodb.core.MongoTemplate
 import org.springframework.data.mongodb.core.query.Criteria
 import org.springframework.data.mongodb.core.query.Query
 import org.springframework.data.mongodb.core.query.Update
 import reactor.rx.Streams
+
+import java.util.concurrent.ConcurrentLinkedQueue
 
 @Slf4j
 class MongoPersistence implements Persistence {
@@ -36,7 +40,6 @@ class MongoPersistence implements Persistence {
 
     @Override
     void persist(EventWrapper event) {
-
         def ev = new EventRecord(
                 orderId: nextId,
                 payload: event.event.getPayload(Map),
@@ -71,6 +74,10 @@ class MongoPersistence implements Persistence {
 
     @Override
     Publisher<Event> replayEvent(String name, String type, long from) {
+//        Streams.from(new PaginatingIterable(stream: name, orderId: from, repo: repo)).map {
+//            new Event(it.eventType, it.streamName, it.schema, it.causedById, it.causedByRelation, it.service, it.orderId, it.eventTime, it.payload, codecs)
+//        }
+
         Streams.from(repo.findByStreamNameAndOrderIdGreaterThanEqual(name, from)).map {
             new Event(it.eventType, it.streamName, it.schema, it.causedById, it.causedByRelation, it.service, it.orderId, it.eventTime, it.payload, codecs)
         }
@@ -84,5 +91,42 @@ class MongoPersistence implements Persistence {
         [
                 "streams": streamNames().size(),
                 "events": template.count(query, EventRecord)]
+    }
+}
+
+
+
+class PaginatingIterable implements Iterable<EventRecord> {
+
+    String stream
+    int orderId
+
+    MongoEventRepo repo
+    int page = 0
+    int pageSize = 500
+
+    Queue items = new ConcurrentLinkedQueue()
+
+    @Override
+    Iterator<EventRecord> iterator() {
+        return new Iterator() {
+            @Override
+            boolean hasNext() {
+                if (!items.size()) {
+                    tryRefill()
+                }
+                return items.size() > 0
+            }
+
+            @Override
+            Object next() {
+                return items.poll()
+            }
+        }
+    }
+
+    void tryRefill() {
+        println "refilling replay queue."
+        items.addAll(repo.findByStreamNameAndOrderIdGreaterThanEqual(stream, orderId, new PageRequest(page++, pageSize)).content)
     }
 }
