@@ -101,6 +101,8 @@ abstract class PhotonApiSpec extends Specification {
     @Unroll
     def "can persist and replay #itemcount events - hot-cold"() {
         given:
+        store.clear()
+
         def data = []
         def cl = new DefaultEventClient(muon)
 
@@ -123,9 +125,10 @@ abstract class PhotonApiSpec extends Specification {
 
         def emitted = []
 
+        def then = System.currentTimeMillis()
+
         println "Started subscribing, emitting HOT data $itemcount"
         (0..itemcount).each {
-            println "LKJLKJKLKJJKL"
             print "Emitting ${it} of $itemcount"
             emitted << cl.event(ClientEvent.ofType("ProductAdded")
                     .stream("my-stream")
@@ -136,10 +139,11 @@ abstract class PhotonApiSpec extends Specification {
             println " ... done ${emitted.size()}"
         }
 
-        println "Completed emitting data"
+        def now = System.currentTimeMillis()
+        println "Completed emitting data, took ${now - then}ms (around ${(now - then) / itemcount}ms per event)"
 
         then:
-        new PollingConditions(timeout: 30).eventually {
+        new PollingConditions(timeout: 120).eventually {
             data.collect{it.orderId}.size() == emitted.size() + coldemitted.size()
         }
 
@@ -153,23 +157,25 @@ abstract class PhotonApiSpec extends Specification {
     @Unroll
     def "can persist and replay #itemcount events - cold"() {
         given:
+        store.clear()
         def data = []
+        def emitted = []
         def closed = false
         def cl = new DefaultEventClient(muon)
 
         def id = UUID.randomUUID().toString()
         when:
         def then = System.currentTimeMillis()
-        itemcount.times {
-            cl.event(ClientEvent.ofType("ProductAdded")
+        (0..itemcount).each {
+            emitted << cl.event(ClientEvent.ofType("ProductAdded")
                     .stream("my-stream")
                     .payload([
                     message: "hello"
             ]).build()
-            )
+            ).orderId
         }
         def now = System.currentTimeMillis()
-        println "Persisted ${itemcount} events for COLD replay in ${now - then}ms"
+        println "Persisted ${itemcount} events for COLD replay in ${now - then}ms (thats about ${(now - then) / itemcount}ms per event)"
         sleep(200)
         then = System.currentTimeMillis()
         cl.replay("my-stream", EventReplayMode.REPLAY_ONLY, [:], new Subscriber<Event>() {
@@ -181,6 +187,7 @@ abstract class PhotonApiSpec extends Specification {
             @Override
             void onNext(Event event) {
                 data << event
+                println "DATA!"
             }
 
             @Override
@@ -190,25 +197,15 @@ abstract class PhotonApiSpec extends Specification {
 
             @Override
             void onComplete() {
-                new Exception().printStackTrace()
                 now = System.currentTimeMillis()
-                println "COLD Replay $id completed in ${now - then}ms"
+                println "COLD Replay $id completed in ${now - then}ms (thats about ${(now - then) / data.size()}ms per event)"
                 closed = true
             }
         })
-        sleep(50)
-        12.times {
-            cl.event(ClientEvent.ofType("ProductAdded")
-                    .stream("my-stream")
-                    .payload([
-                    message: "hello"
-            ]).build()
-            )
-        }
 
         then:
-        new PollingConditions().eventually {
-            data.size() == itemcount
+        new PollingConditions(timeout: 200).eventually {
+            data.size() == emitted.size()
             closed == true
         }
 
