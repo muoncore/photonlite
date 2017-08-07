@@ -74,11 +74,7 @@ class MongoPersistence implements Persistence {
 
     @Override
     Publisher<Event> replayEvent(String name, String type, long from) {
-//        Streams.from(new PaginatingIterable(stream: name, orderId: from, repo: repo)).map {
-//            new Event(it.eventType, it.streamName, it.schema, it.causedById, it.causedByRelation, it.service, it.orderId, it.eventTime, it.payload, codecs)
-//        }
-
-        Streams.from(repo.findByStreamNameAndOrderIdGreaterThanEqual(name, from)).map {
+        Streams.from(new PaginatingIterable(stream: name, orderId: from, repo: repo)).map {
             new Event(it.eventType, it.streamName, it.schema, it.causedById, it.causedByRelation, it.service, it.orderId, it.eventTime, it.payload, codecs)
         }
     }
