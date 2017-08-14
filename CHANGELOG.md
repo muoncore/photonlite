@@ -1,8 +1,7 @@
 # Change Log
 
-## [Unreleased](https://github.com/muoncore/photonlite/tree/HEAD)
-
-[Full Changelog](https://github.com/muoncore/photonlite/compare/v0.0.14...HEAD)
+## [v0.0.15](https://github.com/muoncore/photonlite/tree/v0.0.15) (2017-08-14)
+[Full Changelog](https://github.com/muoncore/photonlite/compare/v0.0.14...v0.0.15)
 
 **Closed issues:**
 
