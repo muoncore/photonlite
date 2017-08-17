@@ -1,5 +1,14 @@
 # Change Log
 
+## [v0.0.15](https://github.com/muoncore/photonlite/tree/v0.0.15) (2017-08-14)
+[Full Changelog](https://github.com/muoncore/photonlite/compare/v0.0.14...v0.0.15)
+
+**Closed issues:**
+
+- Add pagination or reactive driver use for mongo to avoid excessive heap usage during large stream replay [\#10](https://github.com/muoncore/photonlite/issues/10)
+- StreamObserver should implement Rx backpressure in linking between cold persistence replay and the client side [\#2](https://github.com/muoncore/photonlite/issues/2)
+- StreamObserver should notify when it is completed to allow it to be removed from the observer list [\#1](https://github.com/muoncore/photonlite/issues/1)
+
 ## [v0.0.14](https://github.com/muoncore/photonlite/tree/v0.0.14) (2017-08-02)
 [Full Changelog](https://github.com/muoncore/photonlite/compare/v0.0.13...v0.0.14)
 
