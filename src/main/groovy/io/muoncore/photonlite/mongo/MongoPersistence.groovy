@@ -22,9 +22,6 @@ import org.springframework.data.mongodb.core.MongoTemplate
 import org.springframework.data.mongodb.core.query.Criteria
 import org.springframework.data.mongodb.core.query.Query
 import org.springframework.data.mongodb.core.query.Update
-import reactor.rx.Streams
-
-import java.util.concurrent.ConcurrentLinkedQueue
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.LinkedBlockingQueue
 
@@ -108,7 +105,7 @@ class EventPub implements Publisher {
 
     MongoEventRepo repo
     int page = 0
-    int pageSize = 10
+    int pageSize = 150
 
     int requestLeft = 0
 
@@ -122,6 +119,8 @@ class EventPub implements Publisher {
 
     EventPub start() {
         Thread.start {
+            latch.await()
+            latch = new CountDownLatch(1)
             while(running) {
                 if (items.size() == 0) {
                     tryRefill()
@@ -131,7 +130,7 @@ class EventPub implements Publisher {
                     running = false
                     sub.onComplete()
                 } else if (requestLeft == 0) {
-                        log.info("Client has not requested more data, blocking until client needs more")
+                        log.debug("Client has not requested more data, blocking until client needs more")
                         latch.await()
                         latch = new CountDownLatch(1)
                 } else {
@@ -164,7 +163,6 @@ class EventPub implements Publisher {
     }
 
     void tryRefill() {
-        println "refilling replay queue."
         items.addAll(repo.findByStreamNameAndOrderIdGreaterThanEqual(stream, orderId, new PageRequest(page++, pageSize)).content)
     }
 }
