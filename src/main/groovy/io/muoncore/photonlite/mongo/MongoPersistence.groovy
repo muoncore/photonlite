@@ -1,22 +1,15 @@
 package io.muoncore.photonlite.mongo
 
-import com.google.common.eventbus.Subscribe
 import groovy.util.logging.Slf4j
 import io.muoncore.codec.Codecs
 import io.muoncore.codec.json.JsonOnlyCodecs
 import io.muoncore.photonlite.Persistence
 import io.muoncore.protocol.event.Event
 import io.muoncore.protocol.event.server.EventWrapper
-import io.reactivex.BackpressureStrategy
-import io.reactivex.Observable
-import io.reactivex.ObservableEmitter
-import io.reactivex.ObservableOnSubscribe
-import io.reactivex.annotations.NonNull
 import org.reactivestreams.Publisher
 import org.reactivestreams.Subscriber
 import org.reactivestreams.Subscription
 import org.springframework.beans.BeanUtils
-import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.mongodb.core.MongoTemplate
 import org.springframework.data.mongodb.core.query.Criteria
@@ -137,7 +130,7 @@ class EventPub implements Publisher {
                     
                     EventRecord rec = items.poll()
                     
-                    sub.onNext(new Event(rec.eventType, rec.streamName, rec.schema, rec.causedById, rec.causedByRelation, rec.service, rec.orderId, rec.eventTime, rec.payload, codecs))
+                    sub.onNext(new Event(rec.id, rec.eventType, rec.streamName, rec.schema, rec.causedById, rec.causedByRelation, rec.service, rec.orderId, rec.eventTime, rec.payload, codecs))
                     requestLeft--
                 }
             }

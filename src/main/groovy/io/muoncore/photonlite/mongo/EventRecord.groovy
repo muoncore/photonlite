@@ -10,6 +10,7 @@ import org.springframework.data.mongodb.core.index.CompoundIndex
 import org.springframework.data.mongodb.core.index.CompoundIndexes
 import org.springframework.data.mongodb.core.index.Indexed
 import org.springframework.data.mongodb.core.mapping.Document
+import org.springframework.data.mongodb.core.mapping.Field
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -19,6 +20,10 @@ import org.springframework.data.mongodb.core.mapping.Document
     @CompoundIndex(name = "replay_from", def = "{'id' : 1, 'streamName': 1}")
 ])
 class EventRecord {
+
+    @Field("entity_id")
+    String id
+    
     @Indexed
     @Id
     Long orderId
@@ -31,7 +36,7 @@ class EventRecord {
 
     String schema
 
-    Long causedById
+    String causedById
 
     String causedByRelation
 

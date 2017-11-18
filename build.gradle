@@ -17,10 +17,8 @@ sourceCompatibility = 1.8
 version = '1.0'
 
 repositories {
-    mavenLocal()
     jcenter()
-    maven { url 'https://simplicityitself.artifactoryonline.com/simplicityitself/muon' }
-    maven { url 'https://simplicityitself.artifactoryonline.com/simplicityitself/muon-snapshot' }
+    maven { url 'http://artifactory.cloud.daviddawson.me/artifactory/muon' }
 }
 
 compileGroovy {
@@ -33,11 +31,11 @@ dependencies {
     compile group: 'commons-cli', name: 'commons-cli', version: '1.4'
     compile 'org.jgroups:jgroups:4.0.1.Final'
 
-    compile "io.muoncore:muon-core:7.3.3"
-    compile "io.muoncore.transport:muon-amqp:0.0.8"
-    compile "io.muoncore.protocol:stack-rpc:0.0.1"
-    compile "io.muoncore.protocol:stack-reactive-streams:0.0.1"
-    compile "io.muoncore.protocol:stack-event:0.0.1"
+    compile "io.muoncore:muon-core:7.4.1"
+    compile "io.muoncore.transport:muon-amqp:0.0.15"
+    compile "io.muoncore.protocol:stack-rpc:0.0.5"
+    compile "io.muoncore.protocol:stack-reactive-streams:0.0.4"
+    compile "io.muoncore.protocol:stack-event:0.0.4"
 
     compile 'org.codehaus.groovy:groovy-all:2.4.10:indy'
     compile 'joda-time:joda-time:2.9.9'
@@ -51,7 +49,7 @@ dependencies {
     testCompile "org.spockframework:spock-core:1.1-groovy-2.4-rc-4"
     testCompile 'cglib:cglib:2.2.2'
     testCompile 'org.spockframework:spock-spring:1.1-groovy-2.4-rc-4'
-    testCompile "io.muoncore:test-event-store:0.0.5", {
+    testCompile "io.muoncore:test-event-store:0.0.14", {
         exclude module:"slf4j-simple"
     }
 }

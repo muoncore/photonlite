@@ -3,12 +3,12 @@ package io.muoncore.photonlite.h2
 import io.muoncore.codec.Codecs
 import io.muoncore.codec.json.GsonCodec
 import io.muoncore.codec.json.JsonOnlyCodecs
+import io.muoncore.liblib.reactor.rx.Streams
 import io.muoncore.photonlite.Persistence
 import io.muoncore.protocol.event.Event
 import io.muoncore.protocol.event.server.EventWrapper
 import org.reactivestreams.Publisher
 import org.springframework.beans.factory.annotation.Autowired
-import reactor.rx.Streams
 
 import javax.transaction.Transactional
 

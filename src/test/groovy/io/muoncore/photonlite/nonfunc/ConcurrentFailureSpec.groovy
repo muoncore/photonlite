@@ -78,6 +78,55 @@ class ConcurrentFailureSpec extends Specification {
         store.deleteStream("my-faked-stream")
     }
 
+    def "many subscribes"() {
+        given:
+        def data = []
+        def data2 = []
+        def cl = new DefaultEventClient(muon)
+
+        def items = []
+        when:
+        100.times {
+            items << cl.event(ClientEvent.ofType("ProductAdded")
+                    .stream("my-stream")
+                    .payload([
+                    message: "hello"
+            ]).build()
+            ).orderId
+        }
+
+        def datas = []
+        100.times {
+            def dat = []
+            datas << dat
+            subscribe(cl, dat, EventReplayMode.REPLAY_THEN_LIVE, ["from": 0])
+        }
+
+        sleep(100)
+        5.times {
+            cl.event(ClientEvent.ofType("ProductAdded")
+                    .stream("my-faked-stream")
+                    .payload([
+                    message: "hello"
+            ]).build()
+            )
+        }
+
+        and: "Cold replay an existing stream"
+        def replayed = []
+        subscribe(cl, replayed, EventReplayMode.REPLAY_ONLY, [:], "my-faked-stream")
+
+        then:
+        new PollingConditions().eventually {
+            datas.size() == 100
+            datas*.size().sum() == 100 * 5
+        }
+
+        cleanup:
+        store.deleteStream("my-stream")
+        store.deleteStream("my-faked-stream")
+    }
+
     private MuonFuture<EventReplayControl> subscribe(DefaultEventClient cl, data, type, args = [:], streamName = "my-stream") {
         cl.replay(streamName, type, args, new Subscriber<Event>() {
             @Override

@@ -178,6 +178,7 @@ abstract class PhotonApiSpec extends Specification {
         println "Persisted ${itemcount} events for COLD replay in ${now - then}ms (thats about ${(now - then) / itemcount}ms per event)"
         sleep(200)
         then = System.currentTimeMillis()
+        def start = 0
         cl.replay("my-stream", EventReplayMode.REPLAY_ONLY, [:], new Subscriber<Event>() {
             @Override
             void onSubscribe(Subscription subscription) {
@@ -186,6 +187,7 @@ abstract class PhotonApiSpec extends Specification {
 
             @Override
             void onNext(Event event) {
+                if (!start) start = System.currentTimeMillis()
                 data << event
                 println "DATA!"
             }
@@ -199,6 +201,7 @@ abstract class PhotonApiSpec extends Specification {
             void onComplete() {
                 now = System.currentTimeMillis()
                 println "COLD Replay $id completed in ${now - then}ms (thats about ${(now - then) / data.size()}ms per event)"
+                println "Latency from subscribe to first data was ${start - then}ms"
                 closed = true
             }
         })
