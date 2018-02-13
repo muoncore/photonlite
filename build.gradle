@@ -11,10 +11,17 @@ buildscript {
 }
 
 apply plugin: 'groovy'
+apply plugin: "io.spring.dependency-management"
 apply plugin: 'org.springframework.boot'
 
 sourceCompatibility = 1.8
 version = '1.0'
+
+dependencyManagement {
+    imports {
+        mavenBom 'com.amazonaws:aws-java-sdk-bom:1.11.228'
+    }
+}
 
 repositories {
     jcenter()
@@ -45,6 +52,7 @@ dependencies {
     compile("com.h2database:h2")
 
     compile 'org.springframework.data:spring-data-mongodb:1.10.4.RELEASE'
+    compile 'com.google.cloud:google-cloud-datastore:1.14.0'
 
     testCompile "org.spockframework:spock-core:1.1-groovy-2.4-rc-4"
     testCompile 'cglib:cglib:2.2.2'

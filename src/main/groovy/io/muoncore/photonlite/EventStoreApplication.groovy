@@ -4,6 +4,7 @@ import groovy.util.logging.Slf4j
 import io.muoncore.codec.Codecs
 import io.muoncore.codec.DelegatingCodecs
 import io.muoncore.codec.json.JsonOnlyCodecs
+import io.muoncore.photonlite.gcpdatastore.GCPCloudDatastoreConfiguration
 import io.muoncore.photonlite.h2.H2Configuration
 import io.muoncore.photonlite.jgroups.JGroupsConfiguration
 import io.muoncore.photonlite.mongo.MongoConfiguration
@@ -24,8 +25,9 @@ import org.springframework.context.annotation.Configuration
 
 @SpringBootApplication(exclude = [
         HibernateJpaAutoConfiguration,
-        DataSourceAutoConfiguration, MongoAutoConfiguration, MongoDataAutoConfiguration
-])
+        DataSourceAutoConfiguration,
+        MongoAutoConfiguration,
+        MongoDataAutoConfiguration])
 @Configuration
 @Slf4j
 class EventStoreApplication {
@@ -45,7 +47,7 @@ class EventStoreApplication {
             return
         }
         muonurl(cmd)
-        persistencType(cmd)
+        persistenceType(cmd)
         clusterType(cmd)
 
         System.setProperty("spring.profiles.active", profiles.join(","))
@@ -54,13 +56,16 @@ class EventStoreApplication {
                 EventStoreApplication as Object[], args)
     }
 
-    private static void persistencType(CommandLine cmd) {
+    private static void persistenceType(CommandLine cmd) {
         if (cmd.hasOption("type")) {
             switch (cmd.getOptionValue("type")) {
                 case "mem":
                     break
                 case "mongo":
                     MongoConfiguration.processCommands(cmd, profiles)
+                    break
+                case "gcp":
+                    GCPCloudDatastoreConfiguration.processCommands(cmd, profiles)
                     break
                 case "h2":
                 default:

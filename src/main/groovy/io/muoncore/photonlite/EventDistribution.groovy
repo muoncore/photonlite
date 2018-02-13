@@ -48,6 +48,7 @@ class EventDistribution {
                 observers << sub
 
                 return new ResourceManagingSubscriber(delegate: sub.toFlowable(BackpressureStrategy.LATEST).filter {
+                    log.info("CHECKING HOT EVENT ${it.streamName}/${it.orderId} == ${streamName}/$orderId")
                     def ret = it.streamName == streamName && it.orderId >= orderId
                     return ret
                 }, finished: {
@@ -60,7 +61,7 @@ class EventDistribution {
 
                 observers << sub
 
-                return new ResourceManagingSubscriber(delegate: Flowable.concat(persistence.replayEvent(streamName, type, orderId), sub.toFlowable(BackpressureStrategy.LATEST).filter {
+                return new ResourceManagingSubscriber(delegate: Flowable.concat(persistence.replayEvent(streamName, type, orderId), sub.toFlowable(BackpressureStrategy.BUFFER).filter {
                     def ret = it.streamName == streamName && it.orderId >= orderId
                     return ret
                 }), finished: {

@@ -1,6 +1,5 @@
 package io.muoncore.photonlite
 
-import com.google.common.eventbus.EventBus
 import io.muoncore.MultiTransportMuon
 import io.muoncore.Muon
 import io.muoncore.codec.json.JsonOnlyCodecs
@@ -8,6 +7,7 @@ import io.muoncore.config.AutoConfiguration
 import io.muoncore.config.MuonConfigBuilder
 import io.muoncore.memory.discovery.InMemDiscovery
 import io.muoncore.memory.transport.InMemTransport
+import io.muoncore.memory.transport.bus.EventBus
 import io.muoncore.protocol.event.client.DefaultEventClient
 import io.muoncore.protocol.event.client.EventClient
 import org.springframework.context.annotation.Bean
